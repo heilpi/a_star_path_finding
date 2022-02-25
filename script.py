@@ -20,7 +20,23 @@ class Node:
     def __eq__(self, other):
         return self.position == other.position
 
-#This function return the path of the search
+def map_code(str):
+    mapcode = str.split('\n')[1]
+    return mapcode
+
+def maze_convert(str):
+    raw_maze = str.split('\n',3)[3]
+    raw_maze = raw_maze.rsplit('\n',2)[0]
+    raw_maze = raw_maze.split('\n')
+    one_zero_maze = []
+    for i in raw_maze:
+        i = i.replace('.','0').replace('#','1').replace('S','2').replce('E','3')
+        i = i.strip()
+        i = [i[1:-1]]
+        i = list(map(int,i))
+        one_zero_maze.append(i)
+    #one_zero_maze = '\n'.join(one_zero_maze)
+    return one_zero_maze
 
 def return_path(current_node,maze):
     path = []
@@ -191,15 +207,6 @@ if __name__ == '__main__':
             [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-    
-    start = [0, 0] # starting position
-    end = [9,9] # ending position
-    cost = 1 # cost per movement
-
-    path = search(maze,cost, start, end)
-    print('\n'.join([''.join(["{:" ">3d}".format(item) for item in row]) 
-      for row in path]))
-
 
     str = """
     3751392
@@ -234,19 +241,23 @@ if __name__ == '__main__':
     #................................................#
     ##################################################
     """
-    #MAP_CODE = 3751392!
-    map_code = str.split('\n')[1]
-    raw_maze = str.split('\n',3)[3]
-    raw_maze = raw_maze.rsplit('\n',2)[0]
-    raw_maze = raw_maze.split('\n')
-    one_zero_maze = []
-    for i in raw_maze:
-        i = i.replace('.','0').replace('#','1')
-        i = i.strip()
-        i = i[1:-1]
-        one_zero_maze.append(i)
-    one_zero_maze = '\n'.join(one_zero_maze)
-    print(one_zero_maze)
+    
+    start = [0, 0] # starting position
+    end = [9,9] # ending position
+    cost = 1 # cost per movement
+
+    path = search(maze,cost, start, end)
+    print('\n'.join([''.join(["{:" ">3d}".format(item) for item in row]) 
+      for row in path]))
+
+    map_code = map_code(str)
+    print(map_code)
+
+    one_maze = maze_convert(str)
+    print(one_maze)
+
+
+ 
     
 
    
