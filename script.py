@@ -30,15 +30,32 @@ def maze_convert(str):
     raw_maze = raw_maze.split('\n')
     one_zero_maze = []
     for i in raw_maze:
-        i = i.replace('.','0').replace('#','1').replace('S','2').replce('E','3')
+        i = i.replace('.','0').replace('#','1')
         i = i.strip()
-        i = [i[1:-1]]
+        i = i[1:-1]
+        i = list(map(lambda j:j, i))
         i = list(map(int,i))
+        print(i)
         one_zero_maze.append(i)
-    #one_zero_maze = '\n'.join(one_zero_maze)
     return one_zero_maze
 
-def return_path(current_node,maze):
+def starting_position(one_zero_maze):
+    for i, c in enumerate(one_zero_maze):
+        for j, r in enumerate(c):
+            if r == 2:
+                start = [j,i]
+                return start
+
+def ending_position(one_zero_maze):
+    for i, c in enumerate(one_zero_maze):
+        for j, r in enumerate(c):
+            if r == 3:
+                end = [j,i]
+                return end
+
+
+
+def return_path(current_node,maze): 
     path = []
     no_rows, no_columns = np.shape(maze)
     # here we create the initialized result maze with -1 in every position
@@ -48,13 +65,17 @@ def return_path(current_node,maze):
         path.append(current.position)
         current = current.parent
     # Return reversed path as we need to show from start to end path
+    #print(path[0]) #kertoo maalin positionin (9, 9)
+    path_distance = len(path) #Pihvi!
+    print(path_distance)
     path = path[::-1]
+    print(path)
     start_value = 0
     # we update the path of start to end found by A-star serch with every step incremented by 1
     for i in range(len(path)):
-        result[path[i][0]][path[i][1]] = start_value
+        result[path[i][0]][path[i][1]] = start_value #? 
         start_value += 1
-    return result
+    return path_distance
 
 
 def search(maze, cost, start, end):
@@ -88,7 +109,7 @@ def search(maze, cost, start, end):
     outer_iterations = 0
     max_iterations = (len(maze) // 2) ** 10
 
-    # what squares do we search . serarch movement is left-right-top-bottom 
+    # what squares do we search . search movement is left-right-top-bottom 
     #(4 movements) from every positon
 
     move  =  [[-1, 0 ], # go up
@@ -101,7 +122,7 @@ def search(maze, cost, start, end):
         1) We first get the current node by comparing all f cost and selecting the lowest cost node for further expansion
         2) Check max iteration reached or not . Set a message and stop execution
         3) Remove the selected node from yet_to_visit list and add this node to visited list
-        4) Perofmr Goal test and return the path else perform below steps
+        4) Perform Goal test and return the path else perform below steps
         5) For selected node find out all children (use move to find children)
             a) get the current postion for the selected node (this becomes parent node for the children)
             b) check if a valid position exist (boundary will make few nodes invalid)
@@ -163,7 +184,7 @@ def search(maze, cost, start, end):
                 continue
 
             # Make sure walkable terrain
-            if maze[node_position[0]][node_position[1]] != 0:
+            if maze[node_position[0]][node_position[1]] != 0: #tärmää johonkin mikä ei ole 0, eli on 1
                 continue
 
             # Create new node
@@ -197,17 +218,6 @@ def search(maze, cost, start, end):
 
 if __name__ == '__main__':
 
-    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-
     str = """
     3751392
     ##################################################
@@ -231,9 +241,9 @@ if __name__ == '__main__':
     #................................................#
     #.........#......................................#
     ##..........................................#....#
-    ##E...........#..................................#
+    ##3...........#..................................#
     #......#.........................................#
-    #....S......#....................................#
+    #....2......#....................................#
     #................................................#
     #................................................#
     #................................................#
@@ -241,21 +251,18 @@ if __name__ == '__main__':
     #................................................#
     ##################################################
     """
+    maze = maze_convert(str)
+
+    start = starting_position(maze)
+    end = ending_position(maze)
+    cost = 1 
+
+    path = search(maze, cost, start, end)
+
+    mapcode = map_code(str)
+    print("{}:{}".format(mapcode,path))
+
     
-    start = [0, 0] # starting position
-    end = [9,9] # ending position
-    cost = 1 # cost per movement
-
-    path = search(maze,cost, start, end)
-    print('\n'.join([''.join(["{:" ">3d}".format(item) for item in row]) 
-      for row in path]))
-
-    map_code = map_code(str)
-    print(map_code)
-
-    one_maze = maze_convert(str)
-    print(one_maze)
-
 
  
     
