@@ -1,4 +1,5 @@
 import numpy as np
+from timeit import default_timer as timer
 
 class Node:
     """
@@ -43,6 +44,7 @@ def starting_position(one_zero_maze):
     for i, c in enumerate(one_zero_maze):
         for j, r in enumerate(c):
             if r == 2:
+                r = 0
                 start = [j,i]
                 return start
 
@@ -218,6 +220,7 @@ def search(maze, cost, start, end):
 
 if __name__ == '__main__':
 
+    start_timer = timer()
     str = """
     3751392
     ##################################################
@@ -261,6 +264,8 @@ if __name__ == '__main__':
 
     mapcode = map_code(str)
     print("{}:{}".format(mapcode,path))
+    end_timer = timer()
+    print(end_timer - start_timer)
 
     
 
