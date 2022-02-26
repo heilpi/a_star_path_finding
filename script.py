@@ -26,32 +26,29 @@ def map_code(str):
     return mapcode
 
 def maze_convert(str):
-    raw_maze = str.split('\n',3)[3]
-    raw_maze = raw_maze.rsplit('\n',2)[0]
-    raw_maze = raw_maze.split('\n')
+    str = str.split('\n',2)[2]
+    str = str.rsplit('\n',1)[0]
+    str = str.split('\n')
     one_zero_maze = []
-    for i in raw_maze:
-        i = i.replace('.','0').replace('#','1')
+    for i in str:
         i = i.strip()
-        i = i[1:-1]
         i = list(map(lambda j:j, i))
-        i = list(map(int,i))
         print(i)
         one_zero_maze.append(i)
     return one_zero_maze
 
-def starting_position(one_zero_maze):
-    for i, c in enumerate(one_zero_maze):
+def starting_position(maze):
+    for i, c in enumerate(maze):
         for j, r in enumerate(c):
-            if r == 2:
-                r = 0
+            if r == "S":
+                r = "."
                 start = [j,i]
                 return start
 
-def ending_position(one_zero_maze):
-    for i, c in enumerate(one_zero_maze):
+def ending_position(maze):
+    for i, c in enumerate(maze):
         for j, r in enumerate(c):
-            if r == 3:
+            if r == "E":
                 end = [j,i]
                 return end
 
@@ -186,7 +183,7 @@ def search(maze, cost, start, end):
                 continue
 
             # Make sure walkable terrain
-            if maze[node_position[0]][node_position[1]] != 0: #tärmää johonkin mikä ei ole 0, eli on 1
+            if maze[node_position[0]][node_position[1]] != '.': #törmää johonkin mikä ei ole 0, eli on 1
                 continue
 
             # Create new node
@@ -244,9 +241,9 @@ if __name__ == '__main__':
     #................................................#
     #.........#......................................#
     ##..........................................#....#
-    ##3...........#..................................#
+    ##E...........#..................................#
     #......#.........................................#
-    #....2......#....................................#
+    #....S......#....................................#
     #................................................#
     #................................................#
     #................................................#
