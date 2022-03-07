@@ -10,6 +10,7 @@ class Node:
         self.g = 0
         self.h = 0
         self.f = 0
+
     def __eq__(self, other):
         return self.position == other.position
 
@@ -52,15 +53,20 @@ def return_path(current_node, maze):
         path.append(current.position)
         current = current.parent
     path_distance = len(path)-1
-    # here we create the initialized result maze with 0 in every position
-    result = np.zeros((no_rows,no_columns), dtype=int)
-    path = path[::-1]
-    start_value = 0
-    for i in range(len(path)):
-        result[path[i][1]][path[i][0]] = start_value
-        start_value += 1
-    np.set_printoptions(threshold=np.inf, linewidth=np.inf)
-    print(result)
+
+    #here we create the initialized result maze with 0 in every position
+    #UNCOMMENT TO SHOW THE RESULT MAZE 
+    
+    # result = np.zeros((no_rows,no_columns), dtype=int)
+    # path = path[::-1]
+    # start_value = 0
+    # for i in range(len(path)):
+    #     result[path[i][1]][path[i][0]] = start_value
+    #     start_value += 1
+    # np.set_printoptions(threshold=np.inf, linewidth=np.inf)
+    # print(result)
+    # print(maze)
+
     return path_distance
 
 
@@ -87,7 +93,6 @@ def search(maze, cost, start, end):
     no_rows, no_columns = np.shape(maze)
     
     while len(yet_to_visit_list) > 0:
-        
         outer_iterations += 1
 
         current_node = yet_to_visit_list[0]
@@ -120,14 +125,11 @@ def search(maze, cost, start, end):
 
             if maze[node_position[0]][node_position[1]] != '.':
                 continue
-        
-
+            
             new_node = Node(current_node, node_position)
-
             children.append(new_node)
 
         for child in children:
-
             if len([visited_child for visited_child in visited_list if visited_child == child]) > 0:
                 continue
 
@@ -139,6 +141,7 @@ def search(maze, cost, start, end):
 
             if len([i for i in yet_to_visit_list if child == i and child.g > i.g]) > 0:
                 continue
+
             yet_to_visit_list.append(child)
 
 
@@ -187,10 +190,9 @@ if __name__ == '__main__':
     path = search(maze, cost, start, end)
 
     mapcode = map_code(str)
+    print('starting at', start, ', ending', end)
     print("{}:{}".format(mapcode,path))
     end_timer = timer()
     print(end_timer - start_timer)
 
-    # print('\n'.join([''.join(["{:" ">3d}".format(item) for item in row]) 
-    #   for row in path]))
 
