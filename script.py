@@ -26,39 +26,41 @@ def maze_convert(str):
         i = i.strip()
         i = list(map(lambda j:j, i))
         maze.append(i)
-    return maze
+        np_maze = np.array(maze)
+    return np_maze
 
 def starting_position(maze):
-    for i, value_i in enumerate(maze):
-        for j, value_j in enumerate(value_i):
-            if value_j == "S":
-                value_j = "."
-                start = [j,i]
-                return start
+    start = np.where(maze == 'S')
+    i = start[0]
+    j = start[1]
+    start = [*j,*i]
+    maze[maze == 'S'] = '.'
+    return start
 
 def ending_position(maze):
-    for i, value_i in enumerate(maze):
-        for j, value_j in enumerate(value_i):
-            if value_j == "E":
-                end = [j,i]
-                return end
+    end = np.where(maze == 'E')
+    i = end[0]
+    j = end[1]
+    end = [*j,*i]
+    return end
 
 def return_path(current_node, maze): 
     path = []
     no_rows, no_columns = np.shape(maze)
-    # here we create the initialized result maze with -1 in every position
-    # result = [[-1 for i in range(no_columns)] for j in range(no_rows)]
     current = current_node
     while current is not None:
         path.append(current.position)
         current = current.parent
     path_distance = len(path)-1
-    # path = path[::-1]
-    # start_value = 0
-    # for i in range(len(path)):
-    #     result[path[i][0]][path[i][1]] = start_value
-    #     start_value += 1
-    # return result
+    # here we create the initialized result maze with 0 in every position
+    result = np.zeros((no_rows,no_columns), dtype=int)
+    path = path[::-1]
+    start_value = 0
+    for i in range(len(path)):
+        result[path[i][1]][path[i][0]] = start_value
+        start_value += 1
+    np.set_printoptions(threshold=np.inf, linewidth=np.inf)
+    print(result)
     return path_distance
 
 
